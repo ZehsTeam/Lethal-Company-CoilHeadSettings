@@ -6,51 +6,96 @@ namespace com.github.zehsteam.CoilHeadSettings.Patches;
 [HarmonyPatch(typeof(RoundManager))]
 internal class RoundManagerPatch
 {
-    [HarmonyPatch("Start")]
+    [HarmonyPatch("LoadNewLevel")]
     [HarmonyPostfix]
-    static void Start()
+    static void LoadNewLevelPatch()
     {
+        SetCoilHeadSettings();
+    }
+
+    [HarmonyPatch("GenerateNewLevelClientRpc")]
+    [HarmonyPostfix]
+    static void GenerateNewLevelClientRpcPatch()
+    {
+        if (CoilHeadSettingsBase.IsHostOrServer) return;
+
         SetCoilHeadSettings();
     }
 
     public static void SetCoilHeadSettings()
     {
-        EnemyType enemyType = GetEnemyType("Spring");
+        SelectableLevel currentLevel = RoundManager.Instance.currentLevel;
+        SpawnableEnemyWithRarity spawnableEnemyWithRarity = GetSpawnableEnemyWithRarity("Spring");
 
-        if (enemyType == null)
+        if (spawnableEnemyWithRarity == null)
         {
-            CoilHeadSettingsBase.mls.LogError("Error: could not find EnemyType \"Spring\".");
+            CoilHeadSettingsBase.mls.LogError($"Error: could not find SpawnableEnemyWithRarity \"Spring\" in \"{currentLevel.PlanetName}\".");
             return;
         }
 
         SyncedConfig configManager = CoilHeadSettingsBase.Instance.ConfigManager;
 
+        spawnableEnemyWithRarity.rarity = GetRarityForCoilHead(spawnableEnemyWithRarity);
+
+        EnemyType enemyType = spawnableEnemyWithRarity.enemyType;
+
         enemyType.PowerLevel = configManager.PowerLevel;
         enemyType.MaxCount = configManager.MaxSpawned;
 
-        CoilHeadSettingsBase.mls.LogInfo($"Successfully set Coil-Head settings.");
+        CoilHeadSettingsBase.mls.LogInfo($"Successfully set Coil-Head settings for \"{currentLevel.PlanetName}\".");
     }
 
-    private static EnemyType GetEnemyType(string enemyName)
+    private static SpawnableEnemyWithRarity GetSpawnableEnemyWithRarity(string enemyName)
     {
-        if (RoundManager.Instance == null)
-        {
-            CoilHeadSettingsBase.mls.LogError("Error: RoundManager does not exist yet.");
-            return null;
-        }
+        return GetSpawnableEnemyWithRarity(RoundManager.Instance.currentLevel, enemyName);
+    }
 
-        List<SpawnableEnemyWithRarity> enemies = RoundManager.Instance.currentLevel.Enemies;
+    private static SpawnableEnemyWithRarity GetSpawnableEnemyWithRarity(SelectableLevel level, string enemyName)
+    {
+        List<SpawnableEnemyWithRarity> enemies = level.Enemies;
 
         foreach (var enemy in enemies)
         {
-            EnemyType enemyType = enemy.enemyType;
-
-            if (enemyType.enemyName == enemyName)
+            if (enemy.enemyType.enemyName == enemyName)
             {
-                return enemyType;
+                return enemy;
             }
         }
 
         return null;
+    }
+
+    private static int GetRarityForCoilHead(SpawnableEnemyWithRarity spawnableEnemyWithRarity)
+    {
+        SyncedConfig configManager = CoilHeadSettingsBase.Instance.ConfigManager;
+
+        int rarity = spawnableEnemyWithRarity.rarity;
+
+        SelectableLevel selectableLevel = RoundManager.Instance.currentLevel;
+        string planetName = selectableLevel.PlanetName;
+
+        switch (planetName)
+        {
+            case "21 Offense":
+                rarity = configManager.OffenseSpawnWeight;
+                break;
+            case "85 Rend":
+                rarity = configManager.RendSpawnWeight;
+                break;
+            case "7 Dine":
+                rarity = configManager.DineSpawnWeight;
+                break;
+            case "8 Titan":
+                rarity = configManager.TitanSpawnWeight;
+                break;
+            case "61 March":
+                rarity = configManager.MarchSpawnWeight;
+                break;
+            case "56 Vow":
+                rarity = configManager.VowSpawnWeight;
+                break;
+        }
+
+        return (int)(rarity * CoilHeadSettingsBase.Instance.ConfigManager.SpawnWeightMultiplier);
     }
 }

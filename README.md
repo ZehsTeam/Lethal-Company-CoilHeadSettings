@@ -8,15 +8,25 @@ This mod lets you configure the CoilHead.
 Download [CoilHeadSettings](https://thunderstore.io/c/lethal-company/p/Zehs/CoilHeadSettings/) on Thunderstore.
 
 ## Config Settings
-**Settings** will be synced with the host.
+* **Settings** and **Spawn Settings** will be synced with the host.
 
 | Settings | Setting type | Default value | Description |
 | ----------- | ----------- | ----------- | ----------- |
 | `powerLevel` | `Int32` | `1` | The power level of the Coil-Head. |
-| `maxSpawned` | `Int32` | `5` | The max amount of Coil-Heads that can spawn. |
 | `attackDamage` | `Int32` | `90` | How much damage the Coil-Head will deal. |
 | `attackSpeed` | `Single` | `5` | How many times the Coil-Head will attack per second. |
 | `movementSpeed` | `Single` | `14.5` | The movement speed of the Coil-Head. |
+
+| Spawn Settings | Setting type | Default value | Description |
+| ----------- | ----------- | ----------- | ----------- |
+| `maxSpawned` | `Int32` | `5` | The max amount of Coil-Heads that can spawn. |
+| `spawnWeightMultiplier` | `Single` | `1` | The global spawn chance weight multiplier for Coil-Heads. |
+| `offenseSpawnWeight` | `Int32` | `25` | The Coil-Head spawn chance weight for 21-Offense. |
+| `rendSpawnWeight` | `Int32` | `43` | The Coil-Head spawn chance weight for 85-Rend. |
+| `dineSpawnWeight` | `Int32` | `53` | The Coil-Head spawn chance weight for 7-Dine. |
+| `titanSpawnWeight` | `Int32` | `59` | The Coil-Head spawn chance weight for 8-Titan. |
+| `marchSpawnWeight` | `Int32` | `10` | The Coil-Head spawn chance weight for 61-March. |
+| `vowSpawnWeight` | `Int32` | `6` | The Coil-Head spawn chance weight for 56-Vow. |
 
 ## Bug Reports, Help, or Suggestions
 https://github.com/ZehsTeam/Lethal-Company-CoilHeadSettings/issues
@@ -29,7 +39,7 @@ https://github.com/ZehsTeam/Lethal-Company-CoilHeadSettings/issues
 ## My Other Mods
 | Name | Description |
 | ----------- | ----------- |
-| [SellMyScrap](https://thunderstore.io/c/lethal-company/p/Zehs/SellMyScrap/) | Adds a few terminal commands to sell your scrap from the ship. |
+| [SellMyScrap](https://thunderstore.io/c/lethal-company/p/Zehs/SellMyScrap/) | Adds a few terminal commands to sell your scrap from the ship. Highly Configurable. SellFromTerminal + |
 | [OnlyPresents](https://thunderstore.io/c/lethal-company/p/Zehs/OnlyPresents/) | Moons will only spawn gift boxes. (Server-side) |
 | [Hitmarker](https://thunderstore.io/c/lethal-company/p/Zehs/Hitmarker/) | Shows a hitmarker when you successfully hit an enemy. With additional features. (Client-side) |
 | [ToilHead](https://thunderstore.io/c/lethal-company/p/Zehs/ToilHead/) | Coil-Heads can sometimes spawn with a turret on their head. |
