@@ -7,18 +7,22 @@ namespace com.github.zehsteam.CoilHeadSettings;
 internal class SyncedConfigData : INetworkSerializable
 {
     // Settings
-    public int powerLevel;
+    public float powerLevel;
     public int attackDamage;
     public float attackSpeed;
     public float movementSpeed;
 
     // Spawn Settings
-    public int maxSpawned;
+    public int maxSpawnCount;
     public float spawnWeightMultiplier;
-    public int offenseSpawnWeight;
-    public int rendSpawnWeight;
-    public int dineSpawnWeight;
+    public int liquidationSpawnWeight;
+    public int embrionSpawnWeight;
+    public int artificeSpawnWeight;
     public int titanSpawnWeight;
+    public int dineSpawnWeight;
+    public int rendSpawnWeight;
+    public int adamanceSpawnWeight;
+    public int offenseSpawnWeight;
     public int marchSpawnWeight;
     public int vowSpawnWeight;
 
@@ -33,12 +37,16 @@ internal class SyncedConfigData : INetworkSerializable
         movementSpeed = configManager.MovementSpeed;
 
         // Spawn Settings
-        maxSpawned = configManager.MaxSpawned;
+        maxSpawnCount = configManager.MaxSpawnCount;
         spawnWeightMultiplier = configManager.SpawnWeightMultiplier;
-        offenseSpawnWeight = configManager.OffenseSpawnWeight;
-        rendSpawnWeight = configManager.RendSpawnWeight;
-        dineSpawnWeight = configManager.DineSpawnWeight;
+        liquidationSpawnWeight = configManager.LiquidationSpawnWeight;
+        embrionSpawnWeight = configManager.EmbrionSpawnWeight;
+        artificeSpawnWeight = configManager.ArtificeSpawnWeight;
         titanSpawnWeight = configManager.TitanSpawnWeight;
+        dineSpawnWeight = configManager.DineSpawnWeight;
+        rendSpawnWeight = configManager.RendSpawnWeight;
+        adamanceSpawnWeight = configManager.AdamanceSpawnWeight;
+        offenseSpawnWeight = configManager.OffenseSpawnWeight;
         marchSpawnWeight = configManager.MarchSpawnWeight;
         vowSpawnWeight = configManager.VowSpawnWeight;
     }
@@ -52,12 +60,16 @@ internal class SyncedConfigData : INetworkSerializable
         serializer.SerializeValue(ref movementSpeed);
 
         // Spawn Settings
-        serializer.SerializeValue(ref maxSpawned);
+        serializer.SerializeValue(ref maxSpawnCount);
         serializer.SerializeValue(ref spawnWeightMultiplier);
-        serializer.SerializeValue(ref offenseSpawnWeight);
-        serializer.SerializeValue(ref rendSpawnWeight);
-        serializer.SerializeValue(ref dineSpawnWeight);
+        serializer.SerializeValue(ref liquidationSpawnWeight);
+        serializer.SerializeValue(ref embrionSpawnWeight);
+        serializer.SerializeValue(ref artificeSpawnWeight);
         serializer.SerializeValue(ref titanSpawnWeight);
+        serializer.SerializeValue(ref dineSpawnWeight);
+        serializer.SerializeValue(ref rendSpawnWeight);
+        serializer.SerializeValue(ref adamanceSpawnWeight);
+        serializer.SerializeValue(ref offenseSpawnWeight);
         serializer.SerializeValue(ref marchSpawnWeight);
         serializer.SerializeValue(ref vowSpawnWeight);
     }

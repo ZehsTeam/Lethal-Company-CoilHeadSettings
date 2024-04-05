@@ -17,7 +17,7 @@ internal class RoundManagerPatch
     [HarmonyPostfix]
     static void GenerateNewLevelClientRpcPatch()
     {
-        if (CoilHeadSettingsBase.IsHostOrServer) return;
+        if (Plugin.IsHostOrServer) return;
 
         SetCoilHeadSettings();
     }
@@ -29,20 +29,20 @@ internal class RoundManagerPatch
 
         if (spawnableEnemyWithRarity == null)
         {
-            CoilHeadSettingsBase.mls.LogError($"Error: could not find SpawnableEnemyWithRarity \"Spring\" in \"{currentLevel.PlanetName}\".");
+            Plugin.logger.LogError($"Error: could not find SpawnableEnemyWithRarity \"Spring\" in \"{currentLevel.PlanetName}\".");
             return;
         }
 
-        SyncedConfig configManager = CoilHeadSettingsBase.Instance.ConfigManager;
+        SyncedConfig configManager = Plugin.Instance.ConfigManager;
 
         spawnableEnemyWithRarity.rarity = GetRarityForCoilHead(spawnableEnemyWithRarity);
 
         EnemyType enemyType = spawnableEnemyWithRarity.enemyType;
 
         enemyType.PowerLevel = configManager.PowerLevel;
-        enemyType.MaxCount = configManager.MaxSpawned;
+        enemyType.MaxCount = configManager.MaxSpawnCount;
 
-        CoilHeadSettingsBase.mls.LogInfo($"Successfully set Coil-Head settings for \"{currentLevel.PlanetName}\".");
+        Plugin.logger.LogInfo($"Successfully set Coil-Head settings for \"{currentLevel.PlanetName}\".");
     }
 
     private static SpawnableEnemyWithRarity GetSpawnableEnemyWithRarity(string enemyName)
@@ -67,7 +67,7 @@ internal class RoundManagerPatch
 
     private static int GetRarityForCoilHead(SpawnableEnemyWithRarity spawnableEnemyWithRarity)
     {
-        SyncedConfig configManager = CoilHeadSettingsBase.Instance.ConfigManager;
+        SyncedConfig configManager = Plugin.Instance.ConfigManager;
 
         int rarity = spawnableEnemyWithRarity.rarity;
 
@@ -76,17 +76,29 @@ internal class RoundManagerPatch
 
         switch (planetName)
         {
-            case "21 Offense":
-                rarity = configManager.OffenseSpawnWeight;
+            case "44 Liquidation":
+                rarity = configManager.LiquidationSpawnWeight;
                 break;
-            case "85 Rend":
-                rarity = configManager.RendSpawnWeight;
+            case "5 Embrion":
+                rarity = configManager.EmbrionSpawnWeight;
+                break;
+            case "68 Artifice":
+                rarity = configManager.ArtificeSpawnWeight;
+                break;
+            case "8 Titan":
+                rarity = configManager.TitanSpawnWeight;
                 break;
             case "7 Dine":
                 rarity = configManager.DineSpawnWeight;
                 break;
-            case "8 Titan":
-                rarity = configManager.TitanSpawnWeight;
+            case "85 Rend":
+                rarity = configManager.RendSpawnWeight;
+                break;
+            case "20 Adamance":
+                rarity = configManager.AdamanceSpawnWeight;
+                break;
+            case "21 Offense":
+                rarity = configManager.OffenseSpawnWeight;
                 break;
             case "61 March":
                 rarity = configManager.MarchSpawnWeight;
@@ -96,6 +108,6 @@ internal class RoundManagerPatch
                 break;
         }
 
-        return (int)(rarity * CoilHeadSettingsBase.Instance.ConfigManager.SpawnWeightMultiplier);
+        return (int)(rarity * Plugin.Instance.ConfigManager.SpawnWeightMultiplier);
     }
 }

@@ -9,12 +9,12 @@ using UnityEngine;
 namespace com.github.zehsteam.CoilHeadSettings;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-public class CoilHeadSettingsBase : BaseUnityPlugin
+public class Plugin : BaseUnityPlugin
 {
     private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
 
-    internal static CoilHeadSettingsBase Instance;
-    internal static ManualLogSource mls;
+    internal static Plugin Instance;
+    internal static ManualLogSource logger;
 
     internal SyncedConfig ConfigManager;
 
@@ -24,8 +24,8 @@ public class CoilHeadSettingsBase : BaseUnityPlugin
     {
         if (Instance == null) Instance = this;
 
-        mls = BepInEx.Logging.Logger.CreateLogSource(MyPluginInfo.PLUGIN_GUID);
-        mls.LogInfo($"{MyPluginInfo.PLUGIN_NAME} has awoken!");
+        logger = BepInEx.Logging.Logger.CreateLogSource(MyPluginInfo.PLUGIN_GUID);
+        logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} has awoken!");
 
         harmony.PatchAll(typeof(GameNetworkManagerPatch));
         harmony.PatchAll(typeof(StartOfRoundPatch));
@@ -33,6 +33,8 @@ public class CoilHeadSettingsBase : BaseUnityPlugin
         harmony.PatchAll(typeof(SpringManAIPatch));
 
         ConfigManager = new SyncedConfig();
+
+        Content.Load();
 
         NetcodePatcherAwake();
     }
@@ -58,7 +60,7 @@ public class CoilHeadSettingsBase : BaseUnityPlugin
 
     public void OnLocalDisconnect()
     {
-        mls.LogInfo($"Local player disconnected. Removing hostConfigData.");
+        logger.LogInfo($"Local player disconnected. Removing hostConfigData.");
         ConfigManager.SetHostConfigData(null);
     }
 }

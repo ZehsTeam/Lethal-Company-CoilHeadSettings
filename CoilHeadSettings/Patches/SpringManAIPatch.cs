@@ -11,7 +11,7 @@ internal class SpringManAIPatch
     [HarmonyPostfix]
     static void __initializeVariablesPatch(ref float ___currentChaseSpeed)
     {
-        ___currentChaseSpeed = CoilHeadSettingsBase.Instance.ConfigManager.MovementSpeed;
+        ___currentChaseSpeed = Plugin.Instance.ConfigManager.MovementSpeed;
     }
 
     [HarmonyPatch("OnCollideWithPlayer")]
@@ -26,7 +26,7 @@ internal class SpringManAIPatch
 
             if (playerControllerB != null)
             {
-                SyncedConfig configManager = CoilHeadSettingsBase.Instance.ConfigManager;
+                SyncedConfig configManager = Plugin.Instance.ConfigManager;
 
                 int attackDamage = configManager.AttackDamage;
                 float attackSpeed = configManager.AttackSpeed;

@@ -7,23 +7,27 @@ internal class SyncedConfig
     private SyncedConfigData hostConfigData;
 
     // Settings
-    private ConfigEntry<int> PowerLevelCfg;
+    private ConfigEntry<float> PowerLevelCfg;
     private ConfigEntry<int> AttackDamageCfg;
     private ConfigEntry<float> AttackSpeedCfg;
     private ConfigEntry<float> MovementSpeedCfg;
 
     // Spawn Settings
-    private ConfigEntry<int> MaxSpawnedCfg;
+    private ConfigEntry<int> MaxSpawnCountCfg;
     private ConfigEntry<float> SpawnWeightMultiplierCfg;
-    private ConfigEntry<int> OffenseSpawnWeightCfg;
-    private ConfigEntry<int> RendSpawnWeightCfg;
-    private ConfigEntry<int> DineSpawnWeightCfg;
+    private ConfigEntry<int> LiquidationSpawnWeightCfg;
+    private ConfigEntry<int> EmbrionSpawnWeightCfg;
+    private ConfigEntry<int> ArtificeSpawnWeightCfg;
     private ConfigEntry<int> TitanSpawnWeightCfg;
+    private ConfigEntry<int> DineSpawnWeightCfg;
+    private ConfigEntry<int> RendSpawnWeightCfg;
+    private ConfigEntry<int> AdamanceSpawnWeightCfg;
     private ConfigEntry<int> MarchSpawnWeightCfg;
+    private ConfigEntry<int> OffenseSpawnWeightCfg;
     private ConfigEntry<int> VowSpawnWeightCfg;
 
     // Settings
-    internal int PowerLevel
+    internal float PowerLevel
     {
         get
         {
@@ -76,15 +80,15 @@ internal class SyncedConfig
     }
 
     // Spawn Settings
-    internal int MaxSpawned
+    internal int MaxSpawnCount
     {
         get
         {
-            return hostConfigData == null ? MaxSpawnedCfg.Value : hostConfigData.maxSpawned;
+            return hostConfigData == null ? MaxSpawnCountCfg.Value : hostConfigData.maxSpawnCount;
         }
         set
         {
-            MaxSpawnedCfg.Value = value;
+            MaxSpawnCountCfg.Value = value;
             SyncedConfigsChanged();
         }
     }
@@ -102,28 +106,54 @@ internal class SyncedConfig
         }
     }
 
-    internal int OffenseSpawnWeight
+    internal int LiquidationSpawnWeight
     {
         get
         {
-            return hostConfigData == null ? OffenseSpawnWeightCfg.Value : hostConfigData.offenseSpawnWeight;
+            return hostConfigData == null ? LiquidationSpawnWeightCfg.Value : hostConfigData.liquidationSpawnWeight;
         }
         set
         {
-            OffenseSpawnWeightCfg.Value = value;
+            LiquidationSpawnWeightCfg.Value = value;
             SyncedConfigsChanged();
         }
     }
 
-    internal int RendSpawnWeight
+    internal int EmbrionSpawnWeight
     {
         get
         {
-            return hostConfigData == null ? RendSpawnWeightCfg.Value : hostConfigData.rendSpawnWeight;
+            return hostConfigData == null ? EmbrionSpawnWeightCfg.Value : hostConfigData.embrionSpawnWeight;
         }
         set
         {
-            RendSpawnWeightCfg.Value = value;
+            EmbrionSpawnWeightCfg.Value = value;
+            SyncedConfigsChanged();
+        }
+    }
+
+    internal int ArtificeSpawnWeight
+    {
+        get
+        {
+            return hostConfigData == null ? ArtificeSpawnWeightCfg.Value : hostConfigData.artificeSpawnWeight;
+        }
+        set
+        {
+            ArtificeSpawnWeightCfg.Value = value;
+            SyncedConfigsChanged();
+        }
+    }
+
+    internal int TitanSpawnWeight
+    {
+        get
+        {
+            return hostConfigData == null ? TitanSpawnWeightCfg.Value : hostConfigData.titanSpawnWeight;
+        }
+        set
+        {
+            TitanSpawnWeightCfg.Value = value;
             SyncedConfigsChanged();
         }
     }
@@ -141,15 +171,41 @@ internal class SyncedConfig
         }
     }
 
-    internal int TitanSpawnWeight
+    internal int RendSpawnWeight
     {
         get
         {
-            return hostConfigData == null ? TitanSpawnWeightCfg.Value : hostConfigData.titanSpawnWeight;
+            return hostConfigData == null ? RendSpawnWeightCfg.Value : hostConfigData.rendSpawnWeight;
         }
         set
         {
-            TitanSpawnWeightCfg.Value = value;
+            RendSpawnWeightCfg.Value = value;
+            SyncedConfigsChanged();
+        }
+    }
+
+    internal int AdamanceSpawnWeight
+    {
+        get
+        {
+            return hostConfigData == null ? AdamanceSpawnWeightCfg.Value : hostConfigData.adamanceSpawnWeight;
+        }
+        set
+        {
+            AdamanceSpawnWeightCfg.Value = value;
+            SyncedConfigsChanged();
+        }
+    }
+
+    internal int OffenseSpawnWeight
+    {
+        get
+        {
+            return hostConfigData == null ? OffenseSpawnWeightCfg.Value : hostConfigData.offenseSpawnWeight;
+        }
+        set
+        {
+            OffenseSpawnWeightCfg.Value = value;
             SyncedConfigsChanged();
         }
     }
@@ -187,12 +243,12 @@ internal class SyncedConfig
 
     private void BindConfigs()
     {
-        ConfigFile config = CoilHeadSettingsBase.Instance.Config;
+        ConfigFile config = Plugin.Instance.Config;
 
         // Settings
         PowerLevelCfg = config.Bind(
             new ConfigDefinition("Settings", "powerLevel"),
-            1,
+            1f,
             new ConfigDescription("The power level of the Coil-Head.")
         );
         AttackDamageCfg = config.Bind(
@@ -212,8 +268,8 @@ internal class SyncedConfig
         );
 
         // Spawn Settings
-        MaxSpawnedCfg = config.Bind(
-            new ConfigDefinition("Spawn Settings", "maxSpawned"),
+        MaxSpawnCountCfg = config.Bind(
+            new ConfigDefinition("Spawn Settings", "maxSpawnCount"),
             5,
             new ConfigDescription("The max amount of Coil-Heads that can spawn.")
         );
@@ -222,10 +278,34 @@ internal class SyncedConfig
             1f,
             new ConfigDescription("The global spawn chance weight multiplier for Coil-Heads.")
         );
-        OffenseSpawnWeightCfg = config.Bind(
-            new ConfigDefinition("Spawn Settings", "offenseSpawnWeight"),
-            25,
-            new ConfigDescription("The Coil-Head spawn chance weight for 21-Offense.",
+        LiquidationSpawnWeightCfg = config.Bind(
+            new ConfigDefinition("Spawn Settings", "liquidationSpawnWeight"),
+            44,
+            new ConfigDescription("The Coil-Head spawn chance weight for 44-Liquidation.",
+            new AcceptableValueRange<int>(0, 100))
+        );
+        EmbrionSpawnWeightCfg = config.Bind(
+            new ConfigDefinition("Spawn Settings", "embrionSpawnWeight"),
+            11,
+            new ConfigDescription("The Coil-Head spawn chance weight for 5-Embrion.",
+            new AcceptableValueRange<int>(0, 100))
+        );
+        ArtificeSpawnWeightCfg = config.Bind(
+            new ConfigDefinition("Spawn Settings", "artificeSpawnWeight"),
+            88,
+            new ConfigDescription("The Coil-Head spawn chance weight for 68-Artifice.",
+            new AcceptableValueRange<int>(0, 100))
+        );
+        TitanSpawnWeightCfg = config.Bind(
+            new ConfigDefinition("Spawn Settings", "titanSpawnWeight"),
+            59,
+            new ConfigDescription("The Coil-Head spawn chance weight for 8-Titan.",
+            new AcceptableValueRange<int>(0, 100))
+        );
+        DineSpawnWeightCfg = config.Bind(
+            new ConfigDefinition("Spawn Settings", "dineSpawnWeight"),
+            6,
+            new ConfigDescription("The Coil-Head spawn chance weight for 7-Dine.",
             new AcceptableValueRange<int>(0, 100))
         );
         RendSpawnWeightCfg = config.Bind(
@@ -234,16 +314,16 @@ internal class SyncedConfig
             new ConfigDescription("The Coil-Head spawn chance weight for 85-Rend.",
             new AcceptableValueRange<int>(0, 100))
         );
-        DineSpawnWeightCfg = config.Bind(
-            new ConfigDefinition("Spawn Settings", "dineSpawnWeight"),
-            53,
-            new ConfigDescription("The Coil-Head spawn chance weight for 7-Dine.",
+        AdamanceSpawnWeightCfg = config.Bind(
+            new ConfigDefinition("Spawn Settings", "adamanceSpawnWeight"),
+            10,
+            new ConfigDescription("The Coil-Head spawn chance weight for 20-Adamance.",
             new AcceptableValueRange<int>(0, 100))
         );
-        TitanSpawnWeightCfg = config.Bind(
-            new ConfigDefinition("Spawn Settings", "titanSpawnWeight"),
-            59,
-            new ConfigDescription("The Coil-Head spawn chance weight for 8-Titan.",
+        OffenseSpawnWeightCfg = config.Bind(
+            new ConfigDefinition("Spawn Settings", "offenseSpawnWeight"),
+            25,
+            new ConfigDescription("The Coil-Head spawn chance weight for 21-Offense.",
             new AcceptableValueRange<int>(0, 100))
         );
         MarchSpawnWeightCfg = config.Bind(
@@ -267,7 +347,7 @@ internal class SyncedConfig
 
     private void SyncedConfigsChanged()
     {
-        if (!CoilHeadSettingsBase.IsHostOrServer) return;
+        if (!Plugin.IsHostOrServer) return;
 
         PluginNetworkBehaviour.Instance.SendConfigToPlayerClientRpc(new SyncedConfigData(this));
     }

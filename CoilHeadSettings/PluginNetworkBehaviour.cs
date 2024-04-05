@@ -14,9 +14,9 @@ internal class PluginNetworkBehaviour : NetworkBehaviour
     [ClientRpc]
     public void SendConfigToPlayerClientRpc(SyncedConfigData syncedConfigData, ClientRpcParams clientRpcParams = default)
     {
-        if (CoilHeadSettingsBase.IsHostOrServer) return;
+        if (Plugin.IsHostOrServer) return;
 
-        CoilHeadSettingsBase.mls.LogInfo("Syncing config with host.");
-        CoilHeadSettingsBase.Instance.ConfigManager.SetHostConfigData(syncedConfigData);
+        Plugin.logger.LogInfo("Syncing config with host.");
+        Plugin.Instance.ConfigManager.SetHostConfigData(syncedConfigData);
     }
 }

@@ -1,5 +1,5 @@
 # CoilHeadSettings
-This mod lets you configure the CoilHead.
+This mod lets you configure the Coil-Head.
 
 * This mod is for all clients.
 

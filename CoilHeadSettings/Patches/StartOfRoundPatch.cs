@@ -16,9 +16,9 @@ internal class StartOfRoundPatch
 
     private static void SpawnNetworkHandler()
     {
-        if (!CoilHeadSettingsBase.IsHostOrServer) return;
+        if (!Plugin.IsHostOrServer) return;
 
-        var networkHandlerHost = Object.Instantiate(GameNetworkManagerPatch.networkPrefab, Vector3.zero, Quaternion.identity);
+        var networkHandlerHost = Object.Instantiate(Content.networkHandlerPrefab, Vector3.zero, Quaternion.identity);
         networkHandlerHost.GetComponent<NetworkObject>().Spawn();
     }
 
@@ -26,7 +26,7 @@ internal class StartOfRoundPatch
     [HarmonyPrefix]
     static void OnClientConnectPatch(ref ulong clientId)
     {
-        if (!CoilHeadSettingsBase.IsHostOrServer) return;
+        if (!Plugin.IsHostOrServer) return;
 
         ClientRpcParams clientRpcParams = new()
         {
@@ -36,15 +36,15 @@ internal class StartOfRoundPatch
             }
         };
 
-        CoilHeadSettingsBase.mls.LogInfo($"Sending config to client: {clientId}");
+        Plugin.logger.LogInfo($"Sending config to client: {clientId}");
 
-        PluginNetworkBehaviour.Instance.SendConfigToPlayerClientRpc(new SyncedConfigData(CoilHeadSettingsBase.Instance.ConfigManager), clientRpcParams);
+        PluginNetworkBehaviour.Instance.SendConfigToPlayerClientRpc(new SyncedConfigData(Plugin.Instance.ConfigManager), clientRpcParams);
     }
 
     [HarmonyPatch("OnLocalDisconnect")]
     [HarmonyPrefix]
     static void OnLocalDisconnectPatch()
     {
-        CoilHeadSettingsBase.Instance.OnLocalDisconnect();
+        Plugin.Instance.OnLocalDisconnect();
     }
 }
