@@ -286,7 +286,7 @@ internal class SyncedConfig
         );
         EmbrionSpawnWeightCfg = config.Bind(
             new ConfigDefinition("Spawn Settings", "embrionSpawnWeight"),
-            11,
+            25,
             new ConfigDescription("The Coil-Head spawn chance weight for 5-Embrion.",
             new AcceptableValueRange<int>(0, 100))
         );

@@ -29,12 +29,12 @@ public class Plugin : BaseUnityPlugin
 
         harmony.PatchAll(typeof(GameNetworkManagerPatch));
         harmony.PatchAll(typeof(StartOfRoundPatch));
-        harmony.PatchAll(typeof(RoundManagerPatch));
         harmony.PatchAll(typeof(SpringManAIPatch));
 
         ConfigManager = new SyncedConfig();
 
         Content.Load();
+        StartOfRoundPatch.Initialize();
 
         NetcodePatcherAwake();
     }
