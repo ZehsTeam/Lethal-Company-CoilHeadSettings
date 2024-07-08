@@ -1,50 +1,48 @@
 # CoilHeadSettings
-This mod lets you configure the Coil-Head.
+#### This mod lets you configure the Coil-Head enemy.
 
-* This mod is for all clients.
+#### This mod is for all clients!
+
+> If you want to use this mod in v45/v49/v50 use version 1.1.1
 
 ## <img src="https://i.imgur.com/TpnrFSH.png" width="20px"> Download
 
 Download [CoilHeadSettings](https://thunderstore.io/c/lethal-company/p/Zehs/CoilHeadSettings/) on Thunderstore.
 
 ## Config Settings
-* **Settings** and **Spawn Settings** will be synced with the host.
+<details>
+  <summary>Expand</summary>
+<br>
 
-| Settings | Setting type | Default value | Description |
+The default config settings are the vanilla settings.
+
+| General Settings | Setting type | Default value | Description |
 | ----------- | ----------- | ----------- | ----------- |
-| `powerLevel` | `Int32` | `1` | The power level of the Coil-Head. |
-| `attackDamage` | `Int32` | `90` | How much damage the Coil-Head will deal. |
-| `attackSpeed` | `Single` | `5` | How many times the Coil-Head will attack per second. |
-| `movementSpeed` | `Single` | `14.5` | The movement speed of the Coil-Head. |
+| `ExtendedLogging` | `Boolean` | `false` | Enable extended logging. |
 
-| Spawn Settings | Setting type | Default value | Description |
+| Coil-Head Settings | Setting type | Default value | Description |
 | ----------- | ----------- | ----------- | ----------- |
-| `maxSpawned` | `Int32` | `5` | The max amount of Coil-Heads that can spawn. |
-| `spawnWeightMultiplier` | `Single` | `1` | The global spawn chance weight multiplier for Coil-Heads. |
-| `offenseSpawnWeight` | `Int32` | `25` | The Coil-Head spawn chance weight for 21-Offense. |
-| `rendSpawnWeight` | `Int32` | `43` | The Coil-Head spawn chance weight for 85-Rend. |
-| `dineSpawnWeight` | `Int32` | `53` | The Coil-Head spawn chance weight for 7-Dine. |
-| `titanSpawnWeight` | `Int32` | `59` | The Coil-Head spawn chance weight for 8-Titan. |
-| `marchSpawnWeight` | `Int32` | `10` | The Coil-Head spawn chance weight for 61-March. |
-| `vowSpawnWeight` | `Int32` | `6` | The Coil-Head spawn chance weight for 56-Vow. |
+| `PowerLevel` | `Single` | `1` | The power level of the Coil-Head. |
+| `MovementSpeed` | `Single` | `14.5` | The movement speed of the Coil-Head. |
+| `AttackDamage` | `Int32` | `90` | How much damage the Coil-Head will deal. |
+| `AttackSpeed` | `Single` | `5` | How many times the Coil-Head will attack per second. |
 
-## Bug Reports, Help, or Suggestions
+| Coil-Head Settings | Setting type | Default value |
+| ----------- | ----------- | ----------- |
+|  |  | `Separate each entry with a comma.` |
+|  |  | `PlanetName:MaxSpawnCount:Rarity` |
+|  |  | `<string>:<int>:<int>` |
+| `SpawnSettingsMoonList` | `String` | `41 Experimentation:5:0, 220 Assurance:5:0, 56 Vow:5:6, 21 Offense:5:25, 61 March:5:10, 20 Adamance:5:10, 85 Rend:5:43, 7 Dine:5:6, 8 Titan:5:59, 68 Artifice:5:88, 5 Embrion:5:25` |
+
+</details>
+
+## Developer Contact
+#### Report bugs or give suggestions here:
 https://github.com/ZehsTeam/Lethal-Company-CoilHeadSettings/issues
 
-| Discord server | Channel | Post |
+| Discord server | Forum | Post |
 | ----------- | ----------- | ----------- |
 | [Lethal Company modding Discord](https://discord.gg/XeyYqRdRGC) | `#mod-releases` | [CoilHeadSettings](https://discord.com/channels/1168655651455639582/1213608309953929297) |
 | [Unofficial Lethal Company Community](https://discord.gg/nYcQFEpXfU) | `#mod-releases` | [CoilHeadSettings](https://discord.com/channels/1169792572382773318/1213608502233268314) |
 
-## My Other Mods
-| Name | Description |
-| ----------- | ----------- |
-| [SellMyScrap](https://thunderstore.io/c/lethal-company/p/Zehs/SellMyScrap/) | Adds a few terminal commands to sell your scrap from the ship. Highly Configurable. SellFromTerminal + |
-| [OnlyPresents](https://thunderstore.io/c/lethal-company/p/Zehs/OnlyPresents/) | Moons will only spawn gift boxes. (Server-side) |
-| [Hitmarker](https://thunderstore.io/c/lethal-company/p/Zehs/Hitmarker/) | Shows a hitmarker when you successfully hit an enemy. With additional features. (Client-side) |
-| [ToilHead](https://thunderstore.io/c/lethal-company/p/Zehs/ToilHead/) | Coil-Heads can sometimes spawn with a turret on their head. |
-
-<a href="https://thunderstore.io/c/lethal-company/p/Zehs/SellMyScrap/"><img src="https://i.imgur.com/I6W498g.png" width="80px"></a>
-<a href="https://thunderstore.io/c/lethal-company/p/Zehs/OnlyPresents/"><img src="https://i.imgur.com/pesSqHI.png" width="80px"></a>
-<a href="https://thunderstore.io/c/lethal-company/p/Zehs/Hitmarker/"><img src="https://i.imgur.com/29IA990.png" width="80px"></a>
-<a href="https://thunderstore.io/c/lethal-company/p/Zehs/ToilHead/"><img src="https://i.imgur.com/ZNcffJ7.png" width="80px"></a>
+#### Twitch: [CritHaxXoG](https://www.twitch.tv/crithaxxog) - YouTube: [Zehs](https://www.youtube.com/channel/UCb4VEkc-_im0h8DKXlwmIAA)
