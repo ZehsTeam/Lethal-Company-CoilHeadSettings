@@ -16,7 +16,7 @@ public class Plugin : BaseUnityPlugin
     internal static Plugin Instance;
     internal static ManualLogSource logger;
 
-    internal SyncedConfig ConfigManager;
+    internal static SyncedConfigManager ConfigManager;
 
     public static bool IsHostOrServer => NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer;
 
@@ -29,12 +29,13 @@ public class Plugin : BaseUnityPlugin
 
         harmony.PatchAll(typeof(GameNetworkManagerPatch));
         harmony.PatchAll(typeof(StartOfRoundPatch));
+        harmony.PatchAll(typeof(RoundManagerPatch));
         harmony.PatchAll(typeof(SpringManAIPatch));
 
-        ConfigManager = new SyncedConfig();
+        ConfigManager = new SyncedConfigManager();
 
         Content.Load();
-        StartOfRoundPatch.Initialize();
+        SpawnDataManager.Initialize();
 
         NetcodePatcherAwake();
     }
@@ -62,5 +63,21 @@ public class Plugin : BaseUnityPlugin
     {
         logger.LogInfo($"Local player disconnected. Removing hostConfigData.");
         ConfigManager.SetHostConfigData(null);
+    }
+
+    public void LogInfoExtended(object data)
+    {
+        if (ConfigManager.ExtendedLogging.Value)
+        {
+            logger.LogInfo(data);
+        }
+    }
+
+    public void LogWarningExtended(object data)
+    {
+        if (ConfigManager.ExtendedLogging.Value)
+        {
+            logger.LogWarning(data);
+        }
     }
 }

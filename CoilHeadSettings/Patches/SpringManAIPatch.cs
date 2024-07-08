@@ -11,7 +11,7 @@ internal class SpringManAIPatch
     [HarmonyPostfix]
     static void __initializeVariablesPatch(ref float ___currentChaseSpeed)
     {
-        ___currentChaseSpeed = Plugin.Instance.ConfigManager.MovementSpeed;
+        ___currentChaseSpeed = Plugin.ConfigManager.MovementSpeed.Value;
     }
 
     [HarmonyPatch("OnCollideWithPlayer")]
@@ -20,21 +20,17 @@ internal class SpringManAIPatch
     {
         __instance.OnCollideWithEnemy(other);
 
-        if (!___stoppingMovement && __instance.currentBehaviourStateIndex == 1 && !(___timeSinceHittingPlayer >= 0f))
+        if (!___stoppingMovement && __instance.currentBehaviourStateIndex == 1 && ___timeSinceHittingPlayer < 0f)
         {
-            PlayerControllerB playerControllerB = __instance.MeetsStandardPlayerCollisionConditions(other);
+            PlayerControllerB playerScript = __instance.MeetsStandardPlayerCollisionConditions(other);
+            if (playerScript == null) return false;
 
-            if (playerControllerB != null)
-            {
-                SyncedConfig configManager = Plugin.Instance.ConfigManager;
+            int attackDamage = Plugin.ConfigManager.AttackDamage.Value;
+            float attackSpeed = Plugin.ConfigManager.AttackSpeed.Value;
 
-                int attackDamage = configManager.AttackDamage;
-                float attackSpeed = configManager.AttackSpeed;
-
-                ___timeSinceHittingPlayer = 1f / attackSpeed;
-                playerControllerB.DamagePlayer(attackDamage, hasDamageSFX: true, callRPC: true, CauseOfDeath.Mauling, 2);
-                playerControllerB.JumpToFearLevel(1f);
-            }
+            ___timeSinceHittingPlayer = 1f / attackSpeed;
+            playerScript.DamagePlayer(attackDamage, hasDamageSFX: true, callRPC: true, causeOfDeath: CauseOfDeath.Mauling, deathAnimation: 2);
+            playerScript.JumpToFearLevel(1f);
         }
 
         return false;

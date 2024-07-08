@@ -4,7 +4,8 @@ namespace com.github.zehsteam.CoilHeadSettings;
 
 internal class Content
 {
-    public static GameObject networkHandlerPrefab;
+    // Network Handler
+    public static GameObject NetworkHandlerPrefab;
 
     public static void Load()
     {
@@ -19,15 +20,15 @@ internal class Content
             var assetBundleFilePath = System.IO.Path.Combine(dllFolderPath, "coilheadsettings_assets");
             AssetBundle assetBundle = AssetBundle.LoadFromFile(assetBundleFilePath);
 
-            // NetworkHandler
-            networkHandlerPrefab = assetBundle.LoadAsset<GameObject>("NetworkHandler");
-            networkHandlerPrefab.AddComponent<PluginNetworkBehaviour>();
+            // Network Handler
+            NetworkHandlerPrefab = assetBundle.LoadAsset<GameObject>("NetworkHandler");
+            NetworkHandlerPrefab.AddComponent<PluginNetworkBehaviour>();
 
             Plugin.logger.LogInfo("Successfully loaded assets from AssetBundle!");
         }
         catch (System.Exception e)
         {
-            Plugin.logger.LogError($"Error: failed to load assets from AssetBundle.\n\n{e}");
+            Plugin.logger.LogError($"Error: Failed to load assets from AssetBundle.\n\n{e}");
         }
     }
 }

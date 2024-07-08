@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,23 +7,6 @@ namespace com.github.zehsteam.CoilHeadSettings.Patches;
 [HarmonyPatch(typeof(StartOfRound))]
 internal class StartOfRoundPatch
 {
-    private static AccessTools.FieldRef<EnemyType, int>? s_PowerLevelOld;
-    private static AccessTools.FieldRef<EnemyType, float>? s_PowerLevelNew;
-
-    public static void Initialize()
-    {
-        var powerLevelField = AccessTools.Field(typeof(EnemyType), nameof(EnemyType.PowerLevel));
-
-        if (powerLevelField.FieldType == typeof(int))
-        {
-            s_PowerLevelOld = AccessTools.FieldRefAccess<EnemyType, int>(powerLevelField);
-        }
-        if (powerLevelField.FieldType == typeof(float))
-        {
-            s_PowerLevelNew = AccessTools.FieldRefAccess<EnemyType, float>(powerLevelField);
-        }
-    }
-
     [HarmonyPatch("Awake")]
     [HarmonyPostfix]
     static void AwakePatch()
@@ -36,7 +18,7 @@ internal class StartOfRoundPatch
     {
         if (!Plugin.IsHostOrServer) return;
 
-        var networkHandlerHost = Object.Instantiate(Content.networkHandlerPrefab, Vector3.zero, Quaternion.identity);
+        var networkHandlerHost = Object.Instantiate(Content.NetworkHandlerPrefab, Vector3.zero, Quaternion.identity);
         networkHandlerHost.GetComponent<NetworkObject>().Spawn();
     }
 
@@ -44,7 +26,6 @@ internal class StartOfRoundPatch
     [HarmonyPostfix]
     static void StartPatch()
     {
-        //LogInfo();
         SetCoilHeadSettings();
     }
 
@@ -64,7 +45,7 @@ internal class StartOfRoundPatch
 
         Plugin.logger.LogInfo($"Sending config to client: {clientId}");
 
-        PluginNetworkBehaviour.Instance.SendConfigToPlayerClientRpc(new SyncedConfigData(Plugin.Instance.ConfigManager), clientRpcParams);
+        PluginNetworkBehaviour.Instance.SendConfigToPlayerClientRpc(new SyncedConfigData(Plugin.ConfigManager), clientRpcParams);
     }
 
     [HarmonyPatch("OnLocalDisconnect")]
@@ -74,124 +55,58 @@ internal class StartOfRoundPatch
         Plugin.Instance.OnLocalDisconnect();
     }
 
-    public static void SetCoilHeadSettings()
+    private static void SetCoilHeadSettings()
     {
+        AddMissingCoilHeadEnemyToLevels();
+
+        float powerLevel = Plugin.ConfigManager.PowerLevel.Value;
+
         foreach (var level in StartOfRound.Instance.levels)
         {
-            SetCoilHeadSettingsForLevel(level);
+            if (!Utils.TryGetEnemyTypeInLevel(level, "Spring", out EnemyType enemyType))
+            {
+                continue;
+            }
+
+            enemyType.PowerLevel = powerLevel;
         }
+
+        Plugin.Instance.LogInfoExtended($"Set Coil-Head PowerLevel to {powerLevel} for all moons.");
     }
 
-    public static void SetCoilHeadSettingsForLevel(SelectableLevel level)
+    private static void AddMissingCoilHeadEnemyToLevels()
     {
-        SpawnableEnemyWithRarity spawnableEnemyWithRarity = GetSpawnableEnemyWithRarity("Spring", level);
+        Plugin.Instance.LogInfoExtended("Adding missing Coil-Head enemy to levels.");
 
-        if (spawnableEnemyWithRarity is null)
+        if (!Utils.TryGetEnemyType("Spring", out EnemyType enemyType))
         {
-            Plugin.logger.LogWarning($"Warning: could not find SpawnableEnemyWithRarity \"Spring\" in \"{level.PlanetName}\".");
+            Plugin.logger.LogError("Error: Failed to add missing Coil-Head enemy to levels. EnemyType \"Spring\" could not be found.");
             return;
         }
 
-        if (TryGetCoilHeadRarityForLevel(level, out int newRarity))
+        foreach (var moonSpawnData in SpawnDataManager.MoonSpawnDataList.List)
         {
-            spawnableEnemyWithRarity.rarity = newRarity;
-        }
-
-        EnemyType enemyType = spawnableEnemyWithRarity.enemyType;
-
-        if (s_PowerLevelOld is not null)
-        {
-            s_PowerLevelOld(enemyType) = (int)Plugin.Instance.ConfigManager.PowerLevel;
-        }
-        if (s_PowerLevelNew is not null)
-        {
-            s_PowerLevelNew(enemyType) = (float)Plugin.Instance.ConfigManager.PowerLevel;
-        }
-
-        enemyType.MaxCount = Plugin.Instance.ConfigManager.MaxSpawnCount;
-
-        Plugin.logger.LogInfo($"Successfully set Coil-Head settings for \"{level.PlanetName}\".");
-    }
-
-    private static SpawnableEnemyWithRarity GetSpawnableEnemyWithRarity(string enemyName, SelectableLevel level)
-    {
-        List<SpawnableEnemyWithRarity> enemies = level.Enemies;
-
-        foreach (var enemy in enemies)
-        {
-            if (enemy.enemyType.enemyName == enemyName)
+            if (!Utils.TryGetLevelByPlanetName(moonSpawnData.PlanetName, out SelectableLevel level))
             {
-                return enemy;
+                Plugin.logger.LogError($"Error: Failed to add missing Coil-Head enemy to \"{moonSpawnData.PlanetName}\". SelectableLevel is null.");
+                continue;
             }
+
+            if (Utils.GetEnemyTypeInLevel(level, "Spring") != null)
+            {
+                Plugin.Instance.LogInfoExtended($"\"{moonSpawnData.PlanetName}\" already has a Coil-Head enemy. Skipping.");
+                continue;
+            }
+
+            SpawnableEnemyWithRarity spawnableEnemyWithRarity = new SpawnableEnemyWithRarity();
+            spawnableEnemyWithRarity.enemyType = enemyType;
+            spawnableEnemyWithRarity.rarity = moonSpawnData.Rarity;
+
+            level.Enemies.Add(spawnableEnemyWithRarity);
+
+            Plugin.Instance.LogInfoExtended($"Added missing Coil-Head enemy to \"{moonSpawnData.PlanetName}\". Rarity: {moonSpawnData.Rarity}");
         }
 
-        return null;
-    }
-
-    private static bool TryGetCoilHeadRarityForLevel(SelectableLevel level, out int rarity)
-    {
-        rarity = 0;
-
-        SyncedConfig configManager = Plugin.Instance.ConfigManager;
-
-        switch (level.PlanetName)
-        {
-            case "44 Liquidation":
-                rarity = configManager.LiquidationSpawnWeight;
-                return true;
-            case "5 Embrion":
-                rarity = configManager.EmbrionSpawnWeight;
-                return true;
-            case "68 Artifice":
-                rarity = configManager.ArtificeSpawnWeight;
-                return true;
-            case "8 Titan":
-                rarity = configManager.TitanSpawnWeight;
-                return true;
-            case "7 Dine":
-                rarity = configManager.DineSpawnWeight;
-                return true;
-            case "85 Rend":
-                rarity = configManager.RendSpawnWeight;
-                return true;
-            case "20 Adamance":
-                rarity = configManager.AdamanceSpawnWeight;
-                return true;
-            case "21 Offense":
-                rarity = configManager.OffenseSpawnWeight;
-                return true;
-            case "61 March":
-                rarity = configManager.MarchSpawnWeight;
-                return true;
-            case "56 Vow":
-                rarity = configManager.VowSpawnWeight;
-                return true;
-        }
-
-        return false;
-    }
-
-    static void LogInfo()
-    {
-        string message = "";
-
-        foreach (var level in StartOfRound.Instance.levels)
-        {
-            message += GetMessageForLevel(level);
-        }
-
-        Plugin.logger.LogInfo($"\n\n{message.Trim()}\n");
-    }
-
-    static string GetMessageForLevel(SelectableLevel level)
-    {
-        string message = $"[{level.PlanetName}]".PadRight(25);
-
-        SpawnableEnemyWithRarity spawnableEnemyWithRarity = level.Enemies.Find(_ => _.enemyType.enemyName == "Spring");
-        if (spawnableEnemyWithRarity == null) return string.Empty;
-
-        message += $" Spring vanilla spawnWeight: {spawnableEnemyWithRarity.rarity}\n";
-
-        return message;
+        Plugin.Instance.LogInfoExtended("Finished adding missing Coil-Head enemy to levels.");
     }
 }
