@@ -5,34 +5,46 @@ using UnityEngine;
 namespace com.github.zehsteam.CoilHeadSettings.Patches;
 
 [HarmonyPatch(typeof(SpringManAI))]
-internal class SpringManAIPatch
+internal static class SpringManAIPatch
 {
-    [HarmonyPatch("__initializeVariables")]
-    [HarmonyPostfix]
-    static void __initializeVariablesPatch(ref float ___currentChaseSpeed)
-    {
-        ___currentChaseSpeed = Plugin.ConfigManager.MovementSpeed.Value;
-    }
+    private static int _attackDamage => Plugin.ConfigManager.Enemy_AttackDamage.Value;
+    private static float _hitPlayerTimer => 1f / Plugin.ConfigManager.Enemy_AttackSpeed.Value;
 
-    [HarmonyPatch("OnCollideWithPlayer")]
-    [HarmonyPrefix]
-    static bool OnCollideWithPlayerPatch(ref SpringManAI __instance, Collider other, ref bool ___stoppingMovement, ref float ___timeSinceHittingPlayer)
+    public static void Start(SpringManAI springManAI)
     {
-        __instance.OnCollideWithEnemy(other);
-
-        if (!___stoppingMovement && __instance.currentBehaviourStateIndex == 1 && ___timeSinceHittingPlayer < 0f)
+        if (springManAI == null)
         {
-            PlayerControllerB playerScript = __instance.MeetsStandardPlayerCollisionConditions(other);
-            if (playerScript == null) return false;
+            return;
+        }
 
-            int attackDamage = Plugin.ConfigManager.AttackDamage.Value;
-            float attackSpeed = Plugin.ConfigManager.AttackSpeed.Value;
+        springManAI.currentChaseSpeed = Plugin.ConfigManager.Enemy_MovementSpeed.Value;
+    }
+    
+    [HarmonyPatch(nameof(SpringManAI.OnCollideWithPlayer))]
+    [HarmonyPrefix]
+    private static bool OnCollideWithPlayerPatch(ref SpringManAI __instance, Collider other)
+    {
+        if (!__instance.stoppingMovement && __instance.currentBehaviourStateIndex == 1 && !(__instance.hitPlayerTimer >= 0f) && !__instance.setOnCooldown && !((double)(Time.realtimeSinceStartup - __instance.timeAtLastCooldown) < 0.45))
+        {
+            PlayerControllerB playerControllerB = __instance.MeetsStandardPlayerCollisionConditions(other);
 
-            ___timeSinceHittingPlayer = 1f / attackSpeed;
-            playerScript.DamagePlayer(attackDamage, hasDamageSFX: true, callRPC: true, causeOfDeath: CauseOfDeath.Mauling, deathAnimation: 2);
-            playerScript.JumpToFearLevel(1f);
+            if (playerControllerB != null)
+            {
+                __instance.hitPlayerTimer = _hitPlayerTimer;
+                playerControllerB.DamagePlayer(_attackDamage, hasDamageSFX: true, callRPC: true, CauseOfDeath.Mauling, 2);
+                playerControllerB.JumpToFearLevel(1f);
+                __instance.timeSinceHittingPlayer = Time.realtimeSinceStartup;
+            }
         }
 
         return false;
+    }
+
+    public static void SettingsChanged()
+    {
+        foreach (var springManAI in Object.FindObjectsByType<SpringManAI>(FindObjectsSortMode.None))
+        {
+            springManAI.currentChaseSpeed = Plugin.ConfigManager.Enemy_MovementSpeed.Value;
+        }
     }
 }

@@ -1,38 +1,52 @@
 # CoilHeadSettings
-#### This mod lets you configure the Coil-Head enemy.
+#### This mod lets you configure the CoilHead enemy. Power Level, Movement Speed, Attack Damage, Attack Speed, Probability Curve, and per moon Spawn Weight. ([StarlancerAIFix](https://thunderstore.io/c/lethal-company/p/AudioKnight/StarlancerAIFix/) compatibility to configure spawning inside and outside)
 
-#### This mod is for all clients!
-
-> If you want to use this mod in v45/v49/v50 use version 1.1.1
+#### <ins>YOU SHOULD USE THE [LETHALCONFIG](https://thunderstore.io/c/lethal-company/p/AinaVT/LethalConfig/) MOD TO EASILY EDIT THE CONFIG SETTINGS.</ins>
+#### <ins>NOTE: You must load into the ship for all config settings to generate.</ins>
 
 ## <img src="https://i.imgur.com/TpnrFSH.png" width="20px"> Download
 
 Download [CoilHeadSettings](https://thunderstore.io/c/lethal-company/p/Zehs/CoilHeadSettings/) on Thunderstore.
 
 ## Config Settings
-<details>
-  <summary>Expand</summary>
-<br>
+<details><summary>Expand</summary>
 
-The default config settings are the vanilla settings.
+### PowerLevel
+The power level of Coil-Heads.
 
-| General Settings | Setting type | Default value | Description |
-| ----------- | ----------- | ----------- | ----------- |
-| `ExtendedLogging` | `Boolean` | `false` | Enable extended logging. |
+### MovementSpeed
+The movement speed of Coil-Heads.
 
-| Coil-Head Settings | Setting type | Default value | Description |
-| ----------- | ----------- | ----------- | ----------- |
-| `PowerLevel` | `Single` | `1` | The power level of the Coil-Head. |
-| `MovementSpeed` | `Single` | `14.5` | The movement speed of the Coil-Head. |
-| `AttackDamage` | `Int32` | `90` | How much damage the Coil-Head will deal. |
-| `AttackSpeed` | `Single` | `5` | How many times the Coil-Head will attack per second. |
+### AttackDamage
+The attack damage of Coil-Heads.
 
-| Coil-Head Settings | Setting type | Default value |
-| ----------- | ----------- | ----------- |
-|  |  | `Separate each entry with a comma.` |
-|  |  | `PlanetName:MaxSpawnCount:Rarity` |
-|  |  | `<string>:<int>:<int>` |
-| `SpawnSettingsMoonList` | `String` | `41 Experimentation:5:0, 220 Assurance:5:0, 56 Vow:5:6, 21 Offense:5:25, 61 March:5:10, 20 Adamance:5:10, 85 Rend:5:43, 7 Dine:5:6, 8 Titan:5:59, 68 Artifice:5:88, 5 Embrion:5:25` |
+### AttackSpeed
+The number of times Coil-Heads will attack per second.
+
+### ProbabilityCurve 
+Determines how likely Coil-Heads are to spawn throughout the day.
+
+### SpawnWeight
+> This config setting is applied per moon.
+
+Determines how often Coil-Heads will spawn. Lower weights have a lower chance of spawning. Higher weights have a higher chance of spawning.
+
+### MaxSpawnCount
+> This config setting is applied per moon.
+
+The max amount of Coil-Heads that can spawn.
+
+### SpawnInside
+> This config setting is applied per moon.<br>
+> Requires the StarlancerAIFix mod.
+
+If enabled, Coil-Heads will be able to spawn inside.
+
+### SpawnOutside
+> This config setting is applied per moon.<br>
+> Requires the StarlancerAIFix mod.
+
+If enabled, Coil-Heads will be able to spawn outside.
 
 </details>
 

@@ -1,83 +1,51 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using com.github.zehsteam.CoilHeadSettings.Dependencies;
 using com.github.zehsteam.CoilHeadSettings.Patches;
 using HarmonyLib;
-using System.Reflection;
-using Unity.Netcode;
-using UnityEngine;
 
 namespace com.github.zehsteam.CoilHeadSettings;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-public class Plugin : BaseUnityPlugin
+[BepInDependency(LethalConfigProxy.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency(StarlancerAIFixProxy.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
+internal class Plugin : BaseUnityPlugin
 {
-    private readonly Harmony harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
+    private readonly Harmony _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
 
-    internal static Plugin Instance;
-    internal static ManualLogSource logger;
+    internal static Plugin Instance { get; private set; }
+    internal static new ManualLogSource Logger { get; private set; }
 
-    internal static SyncedConfigManager ConfigManager;
+    internal static ConfigManager ConfigManager { get; private set; }
 
-    public static bool IsHostOrServer => NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer;
-
-    void Awake()
+    private void Awake()
     {
         if (Instance == null) Instance = this;
 
-        logger = BepInEx.Logging.Logger.CreateLogSource(MyPluginInfo.PLUGIN_GUID);
-        logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} has awoken!");
+        Logger = BepInEx.Logging.Logger.CreateLogSource(MyPluginInfo.PLUGIN_GUID);
+        Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} has awoken!");
 
-        harmony.PatchAll(typeof(GameNetworkManagerPatch));
-        harmony.PatchAll(typeof(StartOfRoundPatch));
-        harmony.PatchAll(typeof(RoundManagerPatch));
-        harmony.PatchAll(typeof(SpringManAIPatch));
+        _harmony.PatchAll(typeof(StartOfRoundPatch));
+        _harmony.PatchAll(typeof(RoundManagerPatch));
+        _harmony.PatchAll(typeof(EnemyAIPatch));
+        _harmony.PatchAll(typeof(SpringManAIPatch));
 
-        ConfigManager = new SyncedConfigManager();
-
-        Content.Load();
-        SpawnDataManager.Initialize();
-
-        NetcodePatcherAwake();
+        ConfigManager = new ConfigManager();
     }
-
-    private void NetcodePatcherAwake()
-    {
-        var types = Assembly.GetExecutingAssembly().GetTypes();
-
-        foreach (var type in types)
-        {
-            var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-            foreach (var method in methods)
-            {
-                var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
-
-                if (attributes.Length > 0)
-                {
-                    method.Invoke(null, null);
-                }
-            }
-        }
-    }
-
-    public void OnLocalDisconnect()
-    {
-        logger.LogInfo($"Local player disconnected. Removing hostConfigData.");
-        ConfigManager.SetHostConfigData(null);
-    }
-
+    
     public void LogInfoExtended(object data)
     {
-        if (ConfigManager.ExtendedLogging.Value)
+        if (ConfigManager.General_ExtendedLogging.Value)
         {
-            logger.LogInfo(data);
+            Logger.LogInfo(data);
         }
     }
 
     public void LogWarningExtended(object data)
     {
-        if (ConfigManager.ExtendedLogging.Value)
+        if (ConfigManager.General_ExtendedLogging.Value)
         {
-            logger.LogWarning(data);
+            Logger.LogWarning(data);
         }
     }
 }

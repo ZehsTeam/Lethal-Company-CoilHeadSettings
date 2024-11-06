@@ -1,56 +1,66 @@
-﻿namespace com.github.zehsteam.CoilHeadSettings;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
-public class Utils
+namespace com.github.zehsteam.CoilHeadSettings;
+
+public static class Utils
 {
-    public static bool TryGetEnemyType(string enemyName, out EnemyType enemyType)
+    public static string GetEnumName(object e)
     {
-        enemyType = GetEnemyType(enemyName);
-        return enemyType != null;
+        try
+        {
+            return System.Enum.GetName(e.GetType(), e);
+        }
+        catch
+        {
+            return string.Empty;
+        }
     }
 
-    public static EnemyType GetEnemyType(string enemyName)
+    public static AnimationCurve CreateAnimationCurve(float[] values)
     {
-        foreach (var level in StartOfRound.Instance.levels)
+        if (values == null || values.Length == 0)
         {
-            if (TryGetEnemyTypeInLevel(level, enemyName, out EnemyType enemyType))
+            return null;
+        }
+
+        AnimationCurve animationCurve = new AnimationCurve();
+
+        if (values.Length == 1)
+        {
+            animationCurve.AddKey(new Keyframe(0f, values[0]));
+            animationCurve.AddKey(new Keyframe(1f, values[0]));
+            return animationCurve;
+        }
+
+        float timeIncrement = 1f / values.Length - 1;
+
+        for (int i = 0; i < values.Length; i++)
+        {
+            float time = Mathf.Clamp(timeIncrement * i, 0f, 1f);
+            animationCurve.AddKey(time, values[i]);
+        }
+
+        return animationCurve;
+    }
+
+    public static float[] ToFloatsArray(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return [];
+
+        List<float> floats = [];
+
+        string[] items = text.Split(',').Select(x => x.Trim()).ToArray();
+
+        foreach (var item in items)
+        {
+            if (float.TryParse(item, out float parsedFloat))
             {
-                return enemyType;
+                floats.Add(parsedFloat);
             }
         }
 
-        return null;
-    }
-
-    public static bool TryGetEnemyTypeInLevel(SelectableLevel level, string enemyName, out EnemyType enemyType)
-    {
-        enemyType = GetEnemyTypeInLevel(level, enemyName);
-        return enemyType != null;
-    }
-
-    public static EnemyType GetEnemyTypeInLevel(SelectableLevel level, string enemyName)
-    {
-        SpawnableEnemyWithRarity spawnableEnemyWithRarity = level.Enemies.Find(_ => _.enemyType.enemyName == enemyName);
-        if (spawnableEnemyWithRarity == null) return null;
-
-        return spawnableEnemyWithRarity.enemyType;
-    }
-
-    public static bool TryGetLevelByPlanetName(string planetName, out SelectableLevel level)
-    {
-        level = GetLevelByPlanetName(planetName);
-        return level != null;
-    }
-
-    public static SelectableLevel GetLevelByPlanetName(string planetName)
-    {
-        foreach (var level in StartOfRound.Instance.levels)
-        {
-            if (level.PlanetName == planetName)
-            {
-                return level;
-            }
-        }
-
-        return null;
+        return floats.ToArray();
     }
 }
