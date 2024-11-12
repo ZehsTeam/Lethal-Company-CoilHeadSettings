@@ -7,8 +7,8 @@
     
     <AssemblyName>com.github.zehsteam.$(MSBuildProjectName)</AssemblyName> <!-- PLUGIN_GUID -->
     <Product>$(MSBuildProjectName)</Product>                               <!-- PLUGIN_NAME -->
-    <Version>2.0.0</Version>                                               <!-- PLUGIN_VERSION -->
-    <Description>This mod lets you configure the CoilHead enemy. Power Level, Movement Speed, Attack Damage, Attack Speed, Probability Curve, and per moon Spawn Weight. (StarlancerAIFix compatibility to configure spawning inside and outside)</Description>
+    <Version>2.0.1</Version>                                               <!-- PLUGIN_VERSION -->
+    <Description>This mod lets you configure the CoilHead enemy. Power Level, Movement Speed, Attack Damage, Attack Speed, Probability Curve, and per moon Spawn Weight and Max Spawn Count. (StarlancerAIFix compatibility to configure spawning inside and outside)</Description>
     
     <RootNamespace>com.github.zehsteam.$(MSBuildProjectName)</RootNamespace>
     

@@ -99,6 +99,8 @@ internal static class ConfigHelper
     // Credit to Kittenji.
     public static void ClearUnusedEntries(ConfigFile configFile = null)
     {
+        configFile ??= Plugin.Instance.Config;
+
         var orphanedEntries = GetOrphanedConfigEntries(configFile);
 
         if (orphanedEntries == null)
