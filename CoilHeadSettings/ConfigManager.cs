@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using com.github.zehsteam.CoilHeadSettings.Helpers;
 using com.github.zehsteam.CoilHeadSettings.Patches;
 
 namespace com.github.zehsteam.CoilHeadSettings;
@@ -6,7 +7,7 @@ namespace com.github.zehsteam.CoilHeadSettings;
 internal class ConfigManager
 {
     // General
-    public ConfigEntry<bool> General_ExtendedLogging { get; private set; }
+    public ConfigEntry<bool> ExtendedLogging { get; private set; }
 
     // Enemy
     public ConfigEntry<float> Enemy_PowerLevel { get; private set; }
@@ -27,7 +28,7 @@ internal class ConfigManager
         ConfigHelper.SkipAutoGen();
 
         // General
-        General_ExtendedLogging = ConfigHelper.Bind("General", "ExtendedLogging", defaultValue: false, requiresRestart: false, "Enable extended logging.");
+        ExtendedLogging = ConfigHelper.Bind("General", "ExtendedLogging", defaultValue: false, requiresRestart: false, "Enable extended logging.");
 
         // Enemy
         Enemy_PowerLevel =       ConfigHelper.Bind("Enemy", "PowerLevel",       defaultValue: 1f,              requiresRestart: false, $"The power level of {EnemyDataManager.EnemyDisplayName}.");
@@ -41,7 +42,7 @@ internal class ConfigManager
     {
         // Enemy
         Enemy_PowerLevel.SettingChanged += Enemy_PowerLevel_SettingChanged;
-        Enemy_MovementSpeed.SettingChanged += (object sender, System.EventArgs e) => SpringManAIPatch.SettingsChanged();
+        Enemy_MovementSpeed.SettingChanged += (object sender, System.EventArgs e) => SpringManAIPatch.OnConfigSettingsChanged();
         Enemy_ProbabilityCurve.SettingChanged += Enemy_ProbabilityCurve_SettingChanged;
     }
 
@@ -70,7 +71,7 @@ internal class ConfigManager
             switch (key)
             {
                 case "ExtendedLogging":
-                    ConfigHelper.SetConfigEntryValue(General_ExtendedLogging, value);
+                    ConfigHelper.SetConfigEntryValue(ExtendedLogging, value);
                     break;
             }
         }

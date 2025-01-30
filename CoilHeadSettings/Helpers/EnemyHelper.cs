@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace com.github.zehsteam.CoilHeadSettings;
+namespace com.github.zehsteam.CoilHeadSettings.Helpers;
 
 public enum EnemyListType
 {
@@ -158,7 +158,7 @@ internal static class EnemyHelper
 
         try
         {
-            EnemyType enemyType = Resources.FindObjectsOfTypeAll<EnemyType>().Single((EnemyType x) => x.enemyName == enemyName);
+            EnemyType enemyType = Resources.FindObjectsOfTypeAll<EnemyType>().Single((x) => x.enemyName == enemyName);
 
             if (IsValidEnemyType(enemyType) && NetworkUtils.IsNetworkPrefab(enemyType.enemyPrefab))
             {

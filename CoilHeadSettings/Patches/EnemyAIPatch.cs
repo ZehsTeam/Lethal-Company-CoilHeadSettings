@@ -9,9 +9,7 @@ internal static class EnemyAIPatch
     [HarmonyPostfix]
     private static void StartPatch(ref EnemyAI __instance)
     {
-        SpringManAI springManAI = __instance as SpringManAI;
-
-        if (springManAI != null)
+        if (__instance is SpringManAI springManAI)
         {
             SpringManAIPatch.Start(springManAI);
         }

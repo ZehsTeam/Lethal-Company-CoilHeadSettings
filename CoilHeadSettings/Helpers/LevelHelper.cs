@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace com.github.zehsteam.CoilHeadSettings;
+namespace com.github.zehsteam.CoilHeadSettings.Helpers;
 
 internal static class LevelHelper
 {

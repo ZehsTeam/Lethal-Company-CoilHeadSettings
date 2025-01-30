@@ -1,4 +1,5 @@
 ﻿using com.github.zehsteam.CoilHeadSettings.Data;
+using com.github.zehsteam.CoilHeadSettings.Helpers;
 using System.Collections.Generic;
 using UnityEngine;
 

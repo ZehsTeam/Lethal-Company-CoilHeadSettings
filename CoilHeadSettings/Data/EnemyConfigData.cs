@@ -1,5 +1,6 @@
 ﻿using BepInEx.Configuration;
 using com.github.zehsteam.CoilHeadSettings.Dependencies;
+using com.github.zehsteam.CoilHeadSettings.Helpers;
 using System;
 
 namespace com.github.zehsteam.CoilHeadSettings.Data;

@@ -7,7 +7,7 @@
     
     <AssemblyName>com.github.zehsteam.$(MSBuildProjectName)</AssemblyName> <!-- PLUGIN_GUID -->
     <Product>$(MSBuildProjectName)</Product>                               <!-- PLUGIN_NAME -->
-    <Version>2.0.1</Version>                                               <!-- PLUGIN_VERSION -->
+    <Version>2.0.2</Version>                                               <!-- PLUGIN_VERSION -->
     <Description>This mod lets you configure the CoilHead enemy. Power Level, Movement Speed, Attack Damage, Attack Speed, Probability Curve, and per moon Spawn Weight and Max Spawn Count. (StarlancerAIFix compatibility to configure spawning inside and outside)</Description>
     
     <RootNamespace>com.github.zehsteam.$(MSBuildProjectName)</RootNamespace>
@@ -35,13 +35,31 @@
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
     <PackageReference Include="UnityEngine.Modules" Version="2022.3.9" IncludeAssets="compile" PrivateAssets="all" />
-    <PackageReference Include="LethalCompany.GameLibs.Steam" Version="62.0.1-ngd.0" PrivateAssets="all" />
+    <PackageReference Include="LethalCompany.GameLibs.Steam" Version="67.0.0-ngd.0" PrivateAssets="all" />
   </ItemGroup>
   
   <PropertyGroup>
+    <!-- Mod libraries folder -->
     <LibraryFolder>D:\Documents\Lethal Company Modding\Mods</LibraryFolder>
-    <PluginsFolder>D:\SteamLibrary\steamapps\common\Lethal Company\BepInEx\plugins</PluginsFolder>
+
+    <!-- Steam library folder -->
+    <SteamLibrary>D:\SteamLibrary\steamapps\common</SteamLibrary>
+
+    <!-- Lethal Company plugins folder -->
+    <PluginsFolder>$(SteamLibrary)\Lethal Company\BepInEx\plugins</PluginsFolder>
+
+    <!-- Gale profile name -->
+    <GaleProfile>Mod Development</GaleProfile>
+
+    <!-- Gale plugins folder -->
+    <GalePluginsFolder>$(AppData)\com.kesomannen.gale\lethal-company\profiles\$(GaleProfile)\BepInEx\plugins\Zehs-$(MSBuildProjectName)</GalePluginsFolder>
+
+    <!-- Website folder -->
+    <WebsiteFolder>$(MSBuildProjectDirectory)\..\Website\public</WebsiteFolder>
+
+    <!-- Other settings -->
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
 	</PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -56,8 +74,12 @@
   <ItemGroup>
     <Reference Include="LethalConfig"><HintPath>$(LibraryFolder)\AinaVT-LethalConfig\LethalConfig.dll</HintPath></Reference>
   </ItemGroup>
-  
+
   <Target Name="CopyToPluginsFolder" AfterTargets="PostBuildEvent">
     <Copy DestinationFolder="$(PluginsFolder)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="true" SourceFiles="$(TargetPath)" />
+  </Target>
+
+  <Target Name="CopyToGalePluginsFolder" AfterTargets="CopyToPluginsFolder">
+    <Copy DestinationFolder="$(GalePluginsFolder)" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="true" SourceFiles="$(TargetPath)" />
   </Target>
 </Project>

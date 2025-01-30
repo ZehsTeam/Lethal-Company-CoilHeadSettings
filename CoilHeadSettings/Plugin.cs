@@ -18,7 +18,9 @@ internal class Plugin : BaseUnityPlugin
 
     internal static ConfigManager ConfigManager { get; private set; }
 
+    #pragma warning disable IDE0051 // Remove unused private members
     private void Awake()
+    #pragma warning restore IDE0051 // Remove unused private members
     {
         if (Instance == null) Instance = this;
 
@@ -32,20 +34,28 @@ internal class Plugin : BaseUnityPlugin
 
         ConfigManager = new ConfigManager();
     }
-    
+
     public void LogInfoExtended(object data)
     {
-        if (ConfigManager.General_ExtendedLogging.Value)
-        {
-            Logger.LogInfo(data);
-        }
+        LogExtended(LogLevel.Info, data);
     }
 
     public void LogWarningExtended(object data)
     {
-        if (ConfigManager.General_ExtendedLogging.Value)
+        LogExtended(LogLevel.Warning, data);
+    }
+
+    public void LogExtended(LogLevel level, object data)
+    {
+        if (ConfigManager == null || ConfigManager.ExtendedLogging == null)
         {
-            Logger.LogWarning(data);
+            Logger.Log(level, data);
+            return;
+        }
+
+        if (ConfigManager.ExtendedLogging.Value)
+        {
+            Logger.Log(level, data);
         }
     }
 }

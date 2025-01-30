@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace com.github.zehsteam.CoilHeadSettings;
+namespace com.github.zehsteam.CoilHeadSettings.Helpers;
 
 internal static class ConfigHelper
 {
@@ -27,7 +27,7 @@ internal static class ConfigHelper
 
         if (settingChanged != null)
         {
-            configEntry.SettingChanged += (object sender, EventArgs e) => settingChanged?.Invoke(configEntry.Value);
+            configEntry.SettingChanged += (sender, e) => settingChanged?.Invoke(configEntry.Value);
         }
 
         if (LethalConfigProxy.Enabled)
@@ -92,7 +92,7 @@ internal static class ConfigHelper
         else
         {
             // Optionally handle unsupported types
-            throw new System.InvalidOperationException($"Unsupported type: {typeof(T)}");
+            throw new InvalidOperationException($"Unsupported type: {typeof(T)}");
         }
     }
 
